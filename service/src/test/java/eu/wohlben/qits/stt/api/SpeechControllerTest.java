@@ -1,4 +1,4 @@
-package eu.wohlben.qits.domain.speech.api;
+package eu.wohlben.qits.stt.api;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.anyOf;

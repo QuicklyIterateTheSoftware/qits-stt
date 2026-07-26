@@ -1,8 +1,7 @@
-package eu.wohlben.qits.domain.speech.control;
+package eu.wohlben.qits.stt.control;
 
-import eu.wohlben.qits.domain.agent.control.ProcessExecutor;
-import eu.wohlben.qits.domain.error.BadRequestException;
-import eu.wohlben.qits.domain.error.InternalServerErrorException;
+import eu.wohlben.qits.stt.error.BadRequestException;
+import eu.wohlben.qits.stt.error.InternalServerErrorException;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;

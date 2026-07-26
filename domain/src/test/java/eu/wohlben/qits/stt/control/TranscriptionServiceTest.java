@@ -1,12 +1,11 @@
-package eu.wohlben.qits.domain.speech.control;
+package eu.wohlben.qits.stt.control;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import eu.wohlben.qits.domain.agent.control.ProcessExecutor;
-import eu.wohlben.qits.domain.error.BadRequestException;
-import eu.wohlben.qits.domain.error.InternalServerErrorException;
+import eu.wohlben.qits.stt.error.BadRequestException;
+import eu.wohlben.qits.stt.error.InternalServerErrorException;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;

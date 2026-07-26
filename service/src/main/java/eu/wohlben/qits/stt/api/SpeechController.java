@@ -1,7 +1,7 @@
-package eu.wohlben.qits.domain.speech.api;
+package eu.wohlben.qits.stt.api;
 
-import eu.wohlben.qits.domain.error.BadRequestException;
-import eu.wohlben.qits.domain.speech.control.TranscriptionService;
+import eu.wohlben.qits.stt.control.TranscriptionService;
+import eu.wohlben.qits.stt.error.BadRequestException;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

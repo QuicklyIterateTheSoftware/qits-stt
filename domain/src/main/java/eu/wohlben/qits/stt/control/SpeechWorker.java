@@ -1,8 +1,8 @@
-package eu.wohlben.qits.domain.speech.control;
+package eu.wohlben.qits.stt.control;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.wohlben.qits.domain.error.InternalServerErrorException;
+import eu.wohlben.qits.stt.error.InternalServerErrorException;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.io.BufferedReader;
