@@ -87,10 +87,17 @@ Both suites are `@QuarkusTest` and **neither touches python**:
 A test that actually ran the worker would need a venv, a pip install and a 700 MB model download.
 Keep the fakes.
 
-`service/src/test/resources/application.properties` sets `quarkus.rest.path=/api` because the tests
-assert absolute paths. It is **no longer the only copy**: `src/main/resources/application.properties`
-carries it for the packaged process. Change one and you must change both — a suite that is green
-because the *test* copy is right proves nothing about what ships.
+App-level config lives in `service/src/main/resources/application.properties` and **the tests
+inherit it** — Quarkus merges main's copy into the test run, it is not shadowed. That is why
+`SpeechControllerTest` can assert `/api/speech/transcriptions` with no test-side
+`quarkus.rest.path`, and why `service/src/test/resources/application.properties` no longer exists.
+
+Never re-declare an app-level setting in test resources. A second copy does not make the suite
+safer, it makes it lie: the run goes green because the *test* copy is right, so a wrong or missing
+value in the shipped copy — the one that actually reaches a deployment — passes unnoticed. Test
+resources are for genuine test-only overrides, and a real override belongs in a `@TestProfile`
+next to the test that needs it (see `NoDevUserProfile`, `TranscriptionServiceTest.SpeechTestProfile`)
+so its scope is visible.
 
 `OpenApiSchemaExportTest` writes `docs/openapi.yml` as a side effect. Regenerate and commit it
 whenever the route surface changes:
