@@ -88,5 +88,19 @@ A test that actually ran the worker would need a venv, a pip install and a 700 M
 Keep the fakes.
 
 `service/src/test/resources/application.properties` sets `quarkus.rest.path=/api` because the tests
-assert absolute paths. A consuming application sets the same property in its own config; nothing in
-`src/main` depends on it.
+assert absolute paths. It is **no longer the only copy**: `src/main/resources/application.properties`
+carries it for the packaged process. Change one and you must change both — a suite that is green
+because the *test* copy is right proves nothing about what ships.
+
+`OpenApiSchemaExportTest` writes `docs/openapi.yml` as a side effect. Regenerate and commit it
+whenever the route surface changes:
+
+    ./mvnw -pl service test -Dtest=OpenApiSchemaExportTest
+
+It runs as a `@QuarkusTest`, so **the test classpath is indexed too**: any `@Path` resource under
+`src/test` lands in the committed document unless it is `@Operation(hidden = true)`. That is why
+`IdentityEchoResource` carries the annotation.
+
+A `Failed to start quarkus` / `Port already bound: 8081` failure is the known flake
+(`migration-plan.md` §9 item 14) — `@QuarkusTest` restarts racing for the test port. Re-run before
+investigating.

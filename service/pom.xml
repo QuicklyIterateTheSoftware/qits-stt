@@ -15,10 +15,13 @@
          that turns this context's framework-free DomainExceptions into HTTP responses. Everything
          that needs a web stack, and therefore cannot live in `domain`.
 
-         A library JAR, not a deployable app (the monorepo's `artifacts`/`ci` REST boundaries are
-         packaged the same way, and so is qits-workspaces): a consuming Quarkus application pulls it
-         in and gets the route. Packaging it as an app would need an auth variant and a main class,
-         neither of which belongs to this bounded context. -->
+         A DEPLOYABLE APP, not a library JAR. It was extracted as a library — "a consuming Quarkus
+         application pulls it in and gets the route" — because packaging it would have needed an
+         auth variant and a main class. Both reasons have lapsed: authentication terminates at
+         qits-gateway and this module reads a header (see security/), and Quarkus supplies the main
+         class. What remained was a route no process could serve.
+
+         See migration-deployables-plan.md in the superproject. -->
     <artifactId>qits-stt-service</artifactId>
     <name>qits-stt :: service</name>
 
@@ -50,6 +53,13 @@
             <artifactId>quarkus-hibernate-validator</artifactId>
         </dependency>
         <dependency>
+            <!-- The API document at /q/openapi and the browsable UI at /q/swagger-ui. The other
+                 five extracted services carried this out of the monorepo; stt did not, so it was
+                 the one service that could not describe its own surface. -->
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit</artifactId>
             <scope>test</scope>
@@ -63,6 +73,24 @@
 
     <build>
         <plugins>
+            <plugin>
+                <!-- This module is the DEPLOYABLE, not a library jar. Augmentation is what produces
+                     target/quarkus-app/quarkus-run.jar; without this execution `mvn verify` proves
+                     the tests pass and proves nothing about whether the thing starts. Version comes
+                     from the root pom's pluginManagement. -->
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>generate-code</goal>
+                            <goal>generate-code-tests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>

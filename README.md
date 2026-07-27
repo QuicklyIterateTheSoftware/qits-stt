@@ -28,9 +28,15 @@ to start fast. It wants one long-lived process with one warm model, which is exa
 | `domain/` | `eu.wohlben.qits.stt.{control,error}` — the venv bootstrap, the resident worker, the process plumbing, and `speech/transcribe_worker.py` as a classpath resource. No web, no JAX-RS. |
 | `service/` | `eu.wohlben.qits.stt.api` — `POST /speech/transcriptions` and the exception mapper over it. |
 
-Both are library jars, in the shape of the monorepo's `artifacts`/`ci` modules and of
-[qits-workspaces](https://github.com/QuicklyIterateTheSoftware/qits-workspaces): a consuming Quarkus
-application pulls them in and gets the route.
+`domain/` is a library jar. **`service/` is the application** — it is augmented by the
+`quarkus-maven-plugin` and produces a process:
+
+    ./mvnw verify
+    java -jar service/target/quarkus-app/quarkus-run.jar   # :8080, route on /api/speech/transcriptions
+
+It was extracted as a library on the assumption that some consuming Quarkus application would pull
+it in and gain the route. No such application was ever written, and under the gateway topology none
+will be — so the route had no way to be served and the gateway had nothing to route to.
 
 ## What it owns
 
