@@ -89,8 +89,8 @@ Keep the fakes.
 
 App-level config lives in `service/src/main/resources/application.properties` and **the tests
 inherit it** — Quarkus merges main's copy into the test run, it is not shadowed. That is why
-`SpeechControllerTest` can assert `/api/speech/transcriptions` with no test-side
-`quarkus.rest.path`, and why `service/src/test/resources/application.properties` no longer exists.
+`SpeechControllerTest` can assert `/stt/api/transcriptions` with no test-side `quarkus.rest.path`,
+and why `service/src/test/resources/application.properties` no longer exists.
 
 Never re-declare an app-level setting in test resources. A second copy does not make the suite
 safer, it makes it lie: the run goes green because the *test* copy is right, so a wrong or missing

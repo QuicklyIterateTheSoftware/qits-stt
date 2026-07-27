@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <!-- The stt SERVICE layer: the one JAX-RS route (POST /speech/transcriptions) and the mapper
+    <!-- The stt SERVICE layer: the one JAX-RS route (POST /stt/api/transcriptions) and the mapper
          that turns this context's framework-free DomainExceptions into HTTP responses. Everything
          that needs a web stack, and therefore cannot live in `domain`.
 
@@ -53,9 +53,9 @@
             <artifactId>quarkus-hibernate-validator</artifactId>
         </dependency>
         <dependency>
-            <!-- The API document at /q/openapi and the browsable UI at /q/swagger-ui. The other
-                 five extracted services carried this out of the monorepo; stt did not, so it was
-                 the one service that could not describe its own surface. -->
+            <!-- The API document at /stt/q/openapi and the browsable UI at /stt/q/swagger-ui. The
+                 other five extracted services carried this out of the monorepo; stt did not, so it
+                 was the one service that could not describe its own surface. -->
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-openapi</artifactId>
         </dependency>

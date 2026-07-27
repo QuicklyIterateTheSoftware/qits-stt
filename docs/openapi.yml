@@ -18,7 +18,7 @@ components:
           type: string
           pattern: \S
 paths:
-  /api/speech/transcriptions:
+  /stt/api/transcriptions:
     post:
       requestBody:
         content:

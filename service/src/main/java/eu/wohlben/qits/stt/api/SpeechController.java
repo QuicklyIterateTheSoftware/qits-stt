@@ -17,7 +17,7 @@ import java.util.Base64;
  * generated client trivial) and returns the transcript. Transcription runs server-side with
  * Parakeet (see {@link TranscriptionService}); a typical utterance takes a few seconds.
  */
-@Path("/speech/transcriptions")
+@Path("/transcriptions")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SpeechController {

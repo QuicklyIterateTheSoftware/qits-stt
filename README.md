@@ -26,13 +26,13 @@ to start fast. It wants one long-lived process with one warm model, which is exa
 | Module | What |
 |---|---|
 | `domain/` | `eu.wohlben.qits.stt.{control,error}` — the venv bootstrap, the resident worker, the process plumbing, and `speech/transcribe_worker.py` as a classpath resource. No web, no JAX-RS. |
-| `service/` | `eu.wohlben.qits.stt.api` — `POST /speech/transcriptions` and the exception mapper over it. |
+| `service/` | `eu.wohlben.qits.stt.api` — `POST /stt/api/transcriptions` and the exception mapper over it. |
 
 `domain/` is a library jar. **`service/` is the application** — it is augmented by the
 `quarkus-maven-plugin` and produces a process:
 
     ./mvnw verify
-    java -jar service/target/quarkus-app/quarkus-run.jar   # :8080, route on /api/speech/transcriptions
+    java -jar service/target/quarkus-app/quarkus-run.jar   # :8080, route on /stt/api/transcriptions
 
 It was extracted as a library on the assumption that some consuming Quarkus application would pull
 it in and gain the route. No such application was ever written, and under the gateway topology none
@@ -47,7 +47,12 @@ disk state under `qits.speech.home`, not database state.
 
 The API is one route:
 
-    POST /speech/transcriptions   { "audioBase64": "…" } -> { "text": "…" }
+    POST /stt/api/transcriptions   { "audioBase64": "…" } -> { "text": "…" }
+
+Everything this service serves lives under the `/stt` segment — the gateway routes verbatim by
+prefix, so the prefix is part of the address here, not something a proxy adds. `/stt/api` is
+`quarkus.rest.path`; the framework's own surface (`/stt/q/openapi`, `/stt/q/swagger-ui`) sits under
+`quarkus.http.non-application-root-path`. There is no unprefixed form.
 
 Base64 in JSON rather than multipart, deliberately: the clips are small and it keeps the generated
 client trivial. Payloads are capped at 30 MB (≈16 minutes of 16 kHz mono 16-bit WAV).

@@ -26,7 +26,7 @@ public class SpeechControllerTest {
         .contentType(ContentType.JSON)
         .body(body)
         .when()
-        .post("/api/speech/transcriptions")
+        .post("/stt/api/transcriptions")
         .then()
         .statusCode(anyOf(equalTo(Response.Status.BAD_REQUEST.getStatusCode()), equalTo(422)));
   }
@@ -37,7 +37,7 @@ public class SpeechControllerTest {
         .contentType(ContentType.JSON)
         .body(Map.of("audioBase64", "!!! not base64 !!!"))
         .when()
-        .post("/api/speech/transcriptions")
+        .post("/stt/api/transcriptions")
         .then()
         .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
   }
