@@ -28,11 +28,21 @@ to start fast. It wants one long-lived process with one warm model, which is exa
 | `domain/` | `eu.wohlben.qits.stt.{control,error}` — the venv bootstrap, the resident worker, the process plumbing, and `speech/transcribe_worker.py` as a classpath resource. No web, no JAX-RS. |
 | `service/` | `eu.wohlben.qits.stt.api` — `POST /stt/api/transcriptions` and the exception mapper over it. |
 
-`domain/` is a library jar. **`service/` is the application** — it is augmented by the
-`quarkus-maven-plugin` and produces a process:
+`domain/` is a library jar. **`service/` is the application** — it carries
+`<packaging>quarkus</packaging>` and produces a process, as a JVM fast-jar or as a native binary:
 
     ./mvnw verify
     java -jar service/target/quarkus-app/quarkus-run.jar   # :8080, route on /stt/api/transcriptions
+
+    ./mvnw package -Dnative
+    ./service/target/qits-stt                             # same routes, ~14ms to listening
+
+**Native is the shipping form.** `.sdkmanrc` names a GraalVM (`25.0.2-graalce`) so `sdk env` alone
+is enough toolchain — the build wants a `native-image` on `GRAALVM_HOME`, `JAVA_HOME` or `PATH`, and
+if it finds none it does not fail, it quietly falls back to pulling a 1.8 GB Mandrel image and
+running the compile under docker. That fallback still works and is what CI without a GraalVM gets;
+it is just not the intended path, and it is worth recognising by name when a build that normally
+takes 40 seconds starts downloading a container image.
 
 It was extracted as a library on the assumption that some consuming Quarkus application would pull
 it in and gain the route. No such application was ever written, and under the gateway topology none

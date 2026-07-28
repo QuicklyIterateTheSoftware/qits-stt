@@ -3,16 +3,31 @@
 Read `README.md` first: it says why a speech service is host-side and what the one route does. This
 file is the working conventions on top of it.
 
-## The one rule that shapes everything
+## The two rules that shape everything
 
-This repo must build and test green from a **clone of itself alone** — no monorepo, no python, no
-docker, no prior `mvn install` elsewhere, no network beyond maven central. `mvn verify` is the gate.
-Anything that would break that is not a tradeoff to weigh, it is the thing this repo exists to
-avoid.
+**A clone of this repo alone builds and tests green** — no monorepo, no python, no docker, no prior
+`mvn install` elsewhere, no network beyond maven central. `mvn verify` is the gate. Anything that
+would break that is not a tradeoff to weigh, it is the thing this repo exists to avoid.
 
 That is why the poms duplicate versions instead of inheriting them, why the error types are copied
 rather than imported, and — above all — why **no test may ever create a venv, run pip, or spawn the
 worker**. See "Tests" below.
+
+**`service/` compiles to a GraalVM native image**, the same rule qits-workspace-daemon and
+qits-gateway carry, and it extends the clone-alone rule rather than qualifying it: `.sdkmanrc` names
+`25.0.2-graalce`, so `sdk env` gives you a `native-image` and `./mvnw package -Dnative` produces
+`service/target/qits-stt` in about 40 seconds with no container involved.
+
+Two consequences worth stating before you reach for a dependency:
+
+- **A missing GraalVM does not fail the build.** Quarkus logs `Cannot find the native-image ...
+  Attempting to fall back to container build` and shells docker with a 1.8 GB Mandrel image. Green
+  either way, so the fallback is easy to be in without noticing — recognise it by the image pull.
+- **Every dependency is a decision about what the builder has to be told.** Reflection, dynamic
+  proxies, `ServiceLoader`, resource loading by computed name and JNI/JNA all need registering, and
+  the failure lands at *runtime* in the binary while the JVM suite stays green. Prefer what is
+  already in the image — `ProcessBuilder` over a process library, `java.lang.foreign` over JNA — and
+  if a native build needs configuration to pass, that configuration is part of the change.
 
 ## Package and module conventions
 
