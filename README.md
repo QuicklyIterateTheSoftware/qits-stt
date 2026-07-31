@@ -107,3 +107,5 @@ pre-seed `qits.speech.home` with a built venv and a warm HF cache.
   bytes.
 - **A `main` class or an auth variant.** Like `qits-workspaces`, this is not yet a deployable — see
   migration-plan.md §9 item 7.
+
+Integrated by the release flow (AC live proof, maven reactor, 2026-07-31T21:33:42Z).

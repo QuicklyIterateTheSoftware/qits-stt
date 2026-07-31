@@ -36,7 +36,7 @@
          a pure request/response; nothing about it is persisted. -->
     <groupId>eu.wohlben.qits</groupId>
     <artifactId>qits-stt</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>2026.731.213345</version>
     <packaging>pom</packaging>
     <name>qits-stt</name>
 
