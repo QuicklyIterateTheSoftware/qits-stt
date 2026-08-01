@@ -114,3 +114,5 @@ Released by the /release door (AJ live proof, 2026-08-01). The event AJ saw was 
 about an image. `.config/qits/ci-event-release.yml` reacts to it, builds the tagged commit and
 pushes `qits/qits-stt:<version>`; qits-ci turns that green run into `SoftwareRelease`, which is the
 event that means the image exists.
+
+AT: released through the mirror substrate on 2026-08-01.
