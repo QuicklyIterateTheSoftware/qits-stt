@@ -105,8 +105,9 @@ pre-seed `qits.speech.home` with a built venv and a warm HF cache.
   per-service Lit components.
 - **Any workspace or repository awareness.** This context never sees a workspace id. It transcribes
   bytes.
-- **A `main` class or an auth variant.** Like `qits-workspaces`, this is not yet a deployable — see
-  migration-plan.md §9 item 7.
+- **A `main` class or an auth variant.** Quarkus supplies the entrypoint and the gateway owns
+  authentication. The repo has been a deployable since image publishing shipped: every green build
+  pushes `qits/qits-stt:<sha>` and qits-cd deploys it.
 
 Integrated by the release flow (AC live proof, maven reactor, 2026-07-31T21:33:42Z).
 Released by the /release door (AJ live proof, 2026-08-01). The event AJ saw was named
