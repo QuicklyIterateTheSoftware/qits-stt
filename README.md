@@ -109,3 +109,4 @@ pre-seed `qits.speech.home` with a built venv and a warm HF cache.
   migration-plan.md §9 item 7.
 
 Integrated by the release flow (AC live proof, maven reactor, 2026-07-31T21:33:42Z).
+Released by the /release door (AJ live proof, SoftwareRelease observed, 2026-08-01).
