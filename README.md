@@ -109,4 +109,8 @@ pre-seed `qits.speech.home` with a built venv and a warm HF cache.
   migration-plan.md §9 item 7.
 
 Integrated by the release flow (AC live proof, maven reactor, 2026-07-31T21:33:42Z).
-Released by the /release door (AJ live proof, SoftwareRelease observed, 2026-08-01).
+Released by the /release door (AJ live proof, 2026-08-01). The event AJ saw was named
+`SoftwareRelease` and is now `SCMRelease`: it says source control has the version, and nothing
+about an image. `.config/qits/ci-event-release.yml` reacts to it, builds the tagged commit and
+pushes `qits/qits-stt:<version>`; qits-ci turns that green run into `SoftwareRelease`, which is the
+event that means the image exists.
