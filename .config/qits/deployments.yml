@@ -1,0 +1,7 @@
+# How qits-platform-deployments deploys this repo. It reads this file from the git host at
+# the built sha, so the answer travels with the commit.
+#
+# ENVIRONMENT service: every environment runs its own instance. Today prod is the only
+# environment, so it deploys from prod's branch.
+deployment_target: environment
+deploy_branches: environment/prod
