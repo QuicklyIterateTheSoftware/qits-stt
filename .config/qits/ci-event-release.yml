@@ -42,10 +42,10 @@ steps:
     docker: true
     timeout-seconds: 3600
     script: |
-      # The daemon runs this with `bash -c` and no -e, so without this a failed docker build is
-      # swallowed: the push fails, `docker rmi || true` answers 0, and the run reports SUCCESS — and
-      # a green release run is what makes qits-ci announce the artifact. -u makes an unset registry
-      # variable stop the step too.
+      # The daemon runs this with `bash -c` and no -e, so without this an early failure would be
+      # swallowed by the next command's exit code — and a green release run is what makes qits-ci
+      # announce the artifact, so it has to mean the image really was built and pushed. -u makes an
+      # unset registry variable stop the step too.
       set -eu
 
       # THE EVENT, READ AS DATA. The payload reaches the container verbatim as one string in
@@ -66,4 +66,7 @@ steps:
       ref="$QITS_REGISTRY/$QITS_IMAGE_REPOSITORY/qits-stt:$version"
       docker build -t "$ref" -f docker/Dockerfile .
       docker push "$ref"
-      docker rmi "$ref" || true
+      # NO `docker rmi "$ref"`: on a CI host it frees nothing — the layers stay in the builder's
+      # cache either way — while under the containerd image store it drops the last reference to
+      # content a concurrent build of this same Dockerfile may still be resolving, which is the
+      # race that broke the release of 2026-08-11.

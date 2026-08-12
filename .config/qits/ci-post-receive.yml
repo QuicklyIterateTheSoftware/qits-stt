@@ -14,13 +14,17 @@ steps:
     docker: true
     timeout-seconds: 3600
     script: |
-      # The daemon runs this with `bash -c` and no -e, so without this a failed docker build is
-      # swallowed: the push fails, `docker rmi || true` answers 0, the run reports SUCCESS, and cd
-      # is told an image exists that does not (the exact shape of the qits-workspaces
-      # IMAGE_MISSING incident). -u makes an unset registry variable stop the step too.
+      # The daemon runs this with `bash -c` and no -e, so without this an early failure would be
+      # swallowed by the next command's exit code, and cd is told an image exists that does not
+      # (the exact shape of the qits-workspaces IMAGE_MISSING incident). -u makes an unset registry
+      # variable stop the step too.
       set -eu
 
       ref="$QITS_REGISTRY/$QITS_IMAGE_REPOSITORY/qits-stt:$QITS_CI_SHA"
       docker build -t "$ref" -f docker/Dockerfile .
       docker push "$ref"
-      docker rmi "$ref" || true
+      # NO `docker rmi "$ref"`: on a CI host it frees nothing — the layers stay in the builder's
+      # cache either way — while under the containerd image store it drops the last reference to
+      # content a concurrent build of this same Dockerfile may still be resolving. Two builds of
+      # this one Dockerfile do run concurrently, main's and environment/dev's, which is the race
+      # that broke the release of 2026-08-11.
