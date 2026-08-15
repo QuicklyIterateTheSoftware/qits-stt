@@ -54,6 +54,8 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.34.6</quarkus.platform.version>
+        <qits.auth-core.version>2026.815.140812</qits.auth-core.version>
+        <qits.maven.repository.url>http://registry.dev.localhost:8080/artifacts/maven/maven</qits.maven.repository.url>
 
         <compiler-plugin.version>3.15.0</compiler-plugin.version>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
@@ -82,11 +84,23 @@
             <!-- The reactor's own modules, so children depend on them version-less. -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>qits-auth-core</artifactId>
+                <version>${qits.auth-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>qits-stt-domain</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>qits-maven</id>
+            <url>${qits.maven.repository.url}</url>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>

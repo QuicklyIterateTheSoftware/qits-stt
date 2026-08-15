@@ -20,6 +20,7 @@ import java.util.Base64;
 @Path("/transcriptions")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@jakarta.annotation.security.RolesAllowed("qits:admin")
 public class SpeechController {
 
   @Inject TranscriptionService transcriptionService;
