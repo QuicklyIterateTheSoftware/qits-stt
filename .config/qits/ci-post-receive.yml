@@ -19,6 +19,7 @@ steps:
       # (the exact shape of the qits-workspaces IMAGE_MISSING incident). -u makes an unset registry
       # variable stop the step too.
       set -eu
+      registry_host="${QITS_REGISTRY%%:*}"
 
       # The two --secret flags are the fleet's shape for a credential inside a build: the launcher
       # injects the run's commissioned idp client as
@@ -30,8 +31,8 @@ steps:
       # v0.36.1, the build runs green with the variable unset).
       ref="$QITS_REGISTRY/$QITS_IMAGE_REPOSITORY/qits-stt:$QITS_CI_SHA"
       docker build \
-        --network qits-net \
-        --build-arg QITS_MAVEN_REPOSITORY_URL="$QITS_MAVEN_REGISTRY_URL" \
+        --add-host "$registry_host:host-gateway" \
+        --build-arg QITS_MAVEN_REPOSITORY_URL="http://$QITS_REGISTRY/artifacts/maven/maven" \
         --secret id=qits-client-id,env=QITS_COMMISSIONED_CLIENT_ID \
         --secret id=qits-client-secret,env=QITS_COMMISSIONED_CLIENT_SECRET \
         -t "$ref" -f docker/Dockerfile .

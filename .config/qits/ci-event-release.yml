@@ -47,6 +47,7 @@ steps:
       # announce the artifact, so it has to mean the image really was built and pushed. -u makes an
       # unset registry variable stop the step too.
       set -eu
+      registry_host="${QITS_REGISTRY%%:*}"
 
       # THE EVENT, READ AS DATA. The payload reaches the container verbatim as one string in
       # $QITS_EVENT_PAYLOAD; there is no per-field projection.
@@ -71,8 +72,8 @@ steps:
       # is NOT an error (measured on buildx v0.36.1). ci-post-receive.yml carries the same two flags.
       ref="$QITS_REGISTRY/$QITS_IMAGE_REPOSITORY/qits-stt:$version"
       docker build \
-        --network qits-net \
-        --build-arg QITS_MAVEN_REPOSITORY_URL="$QITS_MAVEN_REGISTRY_URL" \
+        --add-host "$registry_host:host-gateway" \
+        --build-arg QITS_MAVEN_REPOSITORY_URL="http://$QITS_REGISTRY/artifacts/maven/maven" \
         --secret id=qits-client-id,env=QITS_COMMISSIONED_CLIENT_ID \
         --secret id=qits-client-secret,env=QITS_COMMISSIONED_CLIENT_SECRET \
         -t "$ref" -f docker/Dockerfile .
