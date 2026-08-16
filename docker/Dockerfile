@@ -85,6 +85,12 @@ RUN ./mvnw --version
 # already sitting here, and a stale one can shadow what this stage compiles.
 COPY . .
 
+# qits-auth-core is published in the platform Maven repository. Match that repository by exact id
+# so Maven permits its internal HTTP URL, and expose the CI run's commissioned credential only to
+# this instruction through BuildKit secrets.
+ARG QITS_MAVEN_REPOSITORY_URL=http://registry.dev.localhost:8080/artifacts/maven/maven
+ENV QITS_MAVEN_REPOSITORY_URL=$QITS_MAVEN_REPOSITORY_URL
+
 # `-pl service -am` names the APP, which is stable; it is not a module list and does not need
 # editing when a module is added. (It is also not free to omit here the way qits-artifacts omits it:
 # `domain`'s jandex/quarkus lifecycle runs either way, but selecting the app is what keeps a future
@@ -98,7 +104,10 @@ COPY . .
 # here proves the same thing more slowly — while importing the known `Port already bound: 8081`
 # @QuarkusTest flake into every image build. Stopping at `package` rather than `verify` also keeps
 # the profile's `skipITs=false` from mattering.
-RUN ./mvnw -B -ntp -pl service -am package -Dnative -DskipTests \
+RUN --mount=type=secret,id=qits-client-id,env=QITS_MAVEN_AUTH_USR \
+    --mount=type=secret,id=qits-client-secret,env=QITS_MAVEN_AUTH_PSW \
+    ./mvnw -B -ntp -s .qits-maven-settings.xml -pl service -am package -Dnative -DskipTests \
+      -Dqits.maven.repository.url="$QITS_MAVEN_REPOSITORY_URL" \
       -Dquarkus.native.native-image-xmx=4g
 
 # --- runtime --------------------------------------------------------------------------------------

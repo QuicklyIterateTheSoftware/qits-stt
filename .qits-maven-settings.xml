@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+  <mirrors>
+    <!-- Exact repository-id matches win over Maven's external:http:* blocker without permitting
+         arbitrary HTTP repositories. -->
+    <mirror>
+      <id>qits-maven-network</id>
+      <mirrorOf>qits-maven</mirrorOf>
+      <url>${env.QITS_MAVEN_REPOSITORY_URL}</url>
+    </mirror>
+  </mirrors>
+  <servers>
+    <!-- BuildKit supplies the commissioned CI client only for the Maven build instruction. -->
+    <server>
+      <id>qits-maven-network</id>
+      <username>${env.QITS_MAVEN_AUTH_USR}</username>
+      <password>${env.QITS_MAVEN_AUTH_PSW}</password>
+    </server>
+  </servers>
+</settings>
