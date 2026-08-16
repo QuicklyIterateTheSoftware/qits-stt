@@ -71,7 +71,7 @@ steps:
       # is NOT an error (measured on buildx v0.36.1). ci-post-receive.yml carries the same two flags.
       ref="$QITS_REGISTRY/$QITS_IMAGE_REPOSITORY/qits-stt:$version"
       docker build \
-        --build-arg QITS_MAVEN_REPOSITORY_URL="http://$QITS_REGISTRY/artifacts/maven/maven" \
+        --build-arg QITS_MAVEN_REPOSITORY_URL="$QITS_MAVEN_REGISTRY_URL" \
         --secret id=qits-client-id,env=QITS_COMMISSIONED_CLIENT_ID \
         --secret id=qits-client-secret,env=QITS_COMMISSIONED_CLIENT_SECRET \
         -t "$ref" -f docker/Dockerfile .
