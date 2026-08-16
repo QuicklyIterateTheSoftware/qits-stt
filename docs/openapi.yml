@@ -33,11 +33,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
         "400":
           description: Bad Request
       summary: Transcribe
       tags:
       - Speech Controller
+      security:
+      - SecurityScheme:
+        - qits:admin
 info:
   title: qits-stt API
-  version: 2026.801.105331
+  version: 2026.812.171728
